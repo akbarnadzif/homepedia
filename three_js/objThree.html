@@ -1,0 +1,105 @@
+	<html>
+	<head>
+		<title> Three.js </title>
+		<link rel="stylesheet" type="text/css" href="style_mainpage.css">
+	</head>
+	<body>
+		
+		<!--JAVA SCRIPT LIBRARY-->
+		<script src="js/three.min.js"></script>
+		<script src="js/TrackballControls.js"></script>
+		<script src="obj/loaders/OBJLoaders.js"></script>
+		<script src="obj/loaders/MTLLoader.js"></script>
+		<!-- <script src="obj/loaders/MTLLoaders.js"></script> -->
+
+		<div id="top-label">
+			<h3>Project sederhana menggunakan three.js</h3>	
+		</div>
+		
+
+		<script>
+			var camera, controls, scene, renderer;
+
+			init();
+			animate();
+			function init(){
+				camera	= new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 0);
+				
+				//mengatur posisi sudut kamera
+				// camera.position.x = 1700;
+				// camera.position.y = -500;
+				camera.position.z = 270;
+				camera.position.y = 100;
+				camera.position.x = -30;
+
+				controls= new THREE.TrackballControls(camera);
+				
+				controls.addEventListener('change', render);
+
+				scene	= new THREE.Scene();
+
+				//mengatur bentuk dan warna objek
+				// var geometry	= new THREE.CubeGeometry(50, 50, 100);
+				// var material	= new THREE.MeshNormalMaterial(
+				// 		{
+				// 			color:0xff0000, 
+				// 			wireframe:true
+				// 		}
+				// 	);
+				// var mesh= new THREE.Mesh(geometry, material);
+				// scene.add(mesh);
+
+				//LAYER
+				var planeGeometry	= new THREE.PlaneGeometry(10000, 10000, 10000);
+				var planeMaterial	= new THREE.MeshNormalMaterial( {color: 0xffff00} );
+				var plane 			= new THREE.Mesh( planeGeometry, planeMaterial );
+				plane.position.set(1,0,-10);
+				scene.add(plane);
+
+
+				//build program di atas
+				renderer= new THREE.WebGLRenderer();
+				renderer.setSize(window.innerWidth, window.innerHeight)
+				document.body.appendChild(renderer.domElement);
+				
+				//LOAD FILE OBJLoader
+				var mtlLoader 	= new THREE.MTLLoader();
+				mtlLoader.setPath("obj/");
+				mtlLoader.load('Home2.mtl')
+				materials.preload();
+
+				var objLoader = new THREE.OBJLoader();
+				objLoader.setMaterials(materials);
+				objLoader.setPath("obj/");
+				objLoader.load('Home2.obj', function(object){
+					
+				})
+
+				//TINDAS SMENTARA
+				// var loader 		= new THREE.OBJLoader();
+				// //var object		= loader.parse('/obj/Home2.obj');
+				// loader.load(				// 	//OBJ FILE
+				// 	'obj/Bulldozer.obj',
+				// 	function(object){
+				// 		object.scale.set(1/5, 1/5, 1/5);
+				// 		object.rotation.x = 0;
+
+				// 		scene.add( object );
+				// 	}
+				// );
+			}
+			//camera.lookAt(plane.position);
+
+
+			//function
+			function animate(){
+				requestAnimationFrame(animate);
+				controls.update();
+			}
+
+			function render(){
+				renderer.render( scene, camera);
+			}
+		</script>
+	</body>
+<html>

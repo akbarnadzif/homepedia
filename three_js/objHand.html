@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>three.js webgl - loaders - OBJ loader</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+			body {
+				font-family: Monospace;
+				background-color: #000;
+				color: #fff;
+				margin: 0px;
+				overflow: hidden;
+			}
+			#info {
+				color: #fff;
+				position: absolute;
+				top: 10px;
+				width: 100%;
+				text-align: center;
+				z-index: 100;
+				display:block;
+			}
+			#info a, .button { color: #f00; font-weight: bold; text-decoration: underline; cursor: pointer }
+		</style>
+	</head>
+
+	<body>
+		<div id="info">
+		<a href="http://threejs.org" target="_blank">three.js</a> - Percobaan OBJHandLoader
+		</div>
+
+		<script src="js/three.min.js"></script>
+		<script src="obj/loaders/OBJLoaders.js"></script>
+		<script src="js/MTLLoader.js"></script>
+		<script src="js/TrackballControls.js"></script>		
+
+
+		<script>
+			var camera, scene, renderer;
+			var container;
+
+			init();
+			animate();
+			render();
+
+			function init() {
+				container = document.createElement( 'div' );
+				document.body.appendChild( container );
+				
+				//KAMERA
+				camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 2000 );
+				camera.position.set( 0, -40, 10 );
+
+				//TRACKBALLCONTROL
+				controls = new THREE.TrackballControls(camera);
+				controls.addEventListener('change', render);
+				
+				//SCENE
+				scene = new THREE.Scene();
+
+				//RENDERER
+				renderer = new THREE.WebGLRenderer();
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				container.appendChild( renderer.domElement );
+
+				//PLAN for GROUND
+				var planeGeometry	= new THREE.PlaneGeometry(1, 1, 1);
+				var planeMaterial	= new THREE.MeshBasicMaterial( {color: 0x000000} );
+				var plane 			= new THREE.Mesh( planeGeometry, planeMaterial );
+				plane.position.set(0,0,-1);
+				scene.add( plane );
+
+				// //AMBIENT LIGHT
+				var ambient 	= new THREE.AmbientLight( 0x101030 );
+				scene.add( ambient );
+
+				//SET ANOTHER LIGHT
+				var spotLight = new THREE.SpotLight( 0xfffffff );
+				spotLight.position.set(100, -100, 100);
+				spotLight.castShadow = true;
+				spotLight.shadowMapWidth = 1024;
+				spotLight.shadowMapWeight= 1024;
+				spotLight.shadowCameraNear  = 500;
+				spotLight.shadowCameraFar	= 4000;
+				spotLight.shadowCameraFov	= 30;
+				scene.add( spotLight );
+
+				//OBJ FILE
+				var mtlLoader = new THREE.MTLLoader();
+				// mtlLoader.setCrossOrigin = 'anonymous';
+				// mtlLoader.setBaseUrl("obj/")
+				// mtlLoader.setPath('obj/');
+				//console.log(mtlLoader);
+				// mtlLoader.setPath('obj/');
+				// mtlLoader.load('Home2.mtl', function(materials){
+				// 	materials.preload();
+				// 		var  objLoader = new THREE.OBJLoader();
+				// 		objLoader.setMaterials(materials);
+				// 		objLoader.setPath('obj/');
+				// 		objLoader.load('obj/Home2.obj', function(object){
+				// 			object.scale.set(0.04, 0.04, 0.04);
+				// 			object.rotation.x = 89.6;
+				// 			object.rotation.y = 0.1;
+				// 			object.rotation.z = 0;
+				// 			scene.add(new THREE.BoxHelper(object));
+				// 		},onProgress, onError);
+				// });
+				
+				var loader 	= new THREE.OBJLoader();
+				loader.load(
+					//OBJ FILE
+					'obj/Home2.obj',
+					function(object){
+						object.scale.set(0.04, 0.04, 0.04);
+						object.rotation.x = 89.6;
+						object.rotation.y = 0.1;
+						object.rotation.z = 0;
+						//70, 270, 180
+						scene.add( object );
+					}
+				);
+				
+				//CAMERA LOOK AT
+				camera.lookAt(plane.position);
+			}
+			function animate(){
+				requestAnimationFrame(animate);
+				controls.update();
+			}
+
+			function render() {
+				// requestAnimationFrame( render );
+				renderer.render(scene, camera);
+			}
+		</script>
+
+	</body>
+</html

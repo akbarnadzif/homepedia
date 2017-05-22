@@ -1,0 +1,62 @@
+<html>
+	<head>
+		<title> Three.js </title>
+		<link rel="stylesheet" type="text/css" href="style_mainpage.css">
+	</head>
+	<body>
+		
+		<!--JAVA SCRIPT LIBRARY-->
+		<script src="js/three.min.js"></script>
+		<script src="js/TrackballControls.js"></script>
+		
+		<div id="top-label">
+			<h3>Project sederhana menggunakan three.js</h3>	
+		</div>
+		
+
+		<script>
+			var camera, controls, scene, renderer;
+
+			init();
+			animate();
+			function init(){
+				camera	= new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 10, 1000);
+				
+				//mengatur posisi sudut kamera
+				// camera.position.x = 1700;
+				// camera.position.y = -500;
+				camera.position.z = 500;
+
+				controls= new THREE.TrackballControls(camera);
+				controls.addEventListener('change', render);
+
+				scene	= new THREE.Scene();
+
+				//mengatur bentuk dan warna objek
+				var geometry	= new THREE.CubeGeometry(50, 50, 100);
+				var material	= new THREE.MeshNormalMaterial(
+						{
+							color:0xff0000, 
+							wireframe:true
+						}
+					);
+				var mesh= new THREE.Mesh(geometry, material);
+				scene.add(mesh);
+
+				//build program di atas
+				renderer= new THREE.WebGLRenderer();
+				renderer.setSize(window.innerWidth, window.innerHeight)
+				document.body.appendChild(renderer.domElement);
+			}
+
+			//function
+			function animate(){
+				requestAnimationFrame( animate );
+				controls.update();
+			}
+			function render(){
+				renderer.render( scene, camera);
+			}
+		</script>
+	</body>
+<html>
